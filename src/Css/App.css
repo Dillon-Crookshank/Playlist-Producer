@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+body {
+    background-color:#000000;
+    font-family: sans-serif, Helvetica, Arial;
+}
+
+.title {
+    color: #FFFFFF;
+    margin-left: 25px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    font-size:larger;
+}
+
+/* login menu styles */
+#login-menu {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#login-container {
+    text-align: center;
+    background-color: #121212;
+    border-radius: 10px;
+    color:#A7A7A7;
+    padding: 10px 10px 10px 10px;
+}
+
+/* general button styles */
+.green-button {
+    background-color: #1DB954;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 20px 30px;
+    border-radius: 50px;
+    text-align: center;
+    align-self: center;
+    border-width:0px;
+}
+
+.green-button:hover {
+    background-color: #1ED760;
+    transform: scale(102%);
+}
+
+.icon-button {
+    font-size:large;
+    background-color: transparent;
+    color:#A7A7A7;
+    border: 0px;
+}
+
+.material-icons {
+    font-size: 25px;
+}
+
+.icon-button:hover {
+    color: #FFFFFF;
+}
+
+/* slider style */
+input[type="range"] {
+    accent-color: #FFFFFF;
+}
+
+input[type="range"]:hover {
+    accent-color: #1ED760;
+
+}
+
+/* Loading screen styles*/
+#spinner-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    background: #000000;
+    z-index: 1;
+}
+
+#spinner {
+    width: 64px;
+    height: 64px;
+    border: 8px solid;
+    border-color: #1ED760 transparent #1ED760 transparent;
+    border-radius: 50%;
+    animation: spin-anim 1s linear infinite;
+}
+
+@keyframes spin-anim {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

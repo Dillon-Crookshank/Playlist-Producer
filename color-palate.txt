@@ -1,0 +1,8 @@
+#000000 - black
+#FFFFFF - white (use for active selectables)
+#F4F4F4 - softer white (use for inactive selectables)
+#121212 - darkest grey
+#232323 - grey
+#A7A7A7 - light grey
+#1ED760 - green
+#1DB954 - dark green
