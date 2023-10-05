@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import QueueItem from './QueueItem';
+import SongListItem from './SongListItem';
+import { transferPlayback } from './SpotifyAPI';
 import defaultAlbum from './assets/SpotifyLogo.png';
 import './Css/Player.css';
 
-const axios = require('axios');
-
 async function fetchQueue(token) {
-    const result = await fetch("https://api.spotify.com/v1/me/player/queue?limit=50", {
+    const result = await fetch("https://api.spotify.com/v1/me/player/queue", {
         method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -35,18 +34,19 @@ function Player({ token }) {
 
         //create event that fires when the web playback script is ready
         window.onSpotifyWebPlaybackSDKReady = () => {
-
-
             const player = new window.Spotify.Player({
                 name: 'Playlist Producer',
                 getOAuthToken: cb => { cb(token); },
-                volume: 0.05
+                volume: volume
             });
 
             setPlayer(player);
 
             player.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id);
+                
+                //transfer playback automatically once the device is ready
+                transferPlayback(token, device_id);
             });
 
             player.addListener('not_ready', ({ device_id }) => {
@@ -64,10 +64,7 @@ function Player({ token }) {
                 }
             });
 
-
-
             player.connect();
-
         };
     }, []);
 
@@ -80,30 +77,35 @@ function Player({ token }) {
 
     return (
         <>
-            <div id="player-container">
-                <img src={current_track !== null ? current_track.album.images[0].url : defaultAlbum} id="album-cover-image" />
-                <div id="song-info-container">
-                    <p id="song-name">{current_track !== null ? current_track.name : "Change device in Spotify app to \"Playlist Producer\""}</p>
-                    <p id="song-artist">{current_track !== null ? current_track.artists[0].name : " "}</p>
-                    <div id="player-controls">
-                        <button className="icon-button" onClick={() => { player.previousTrack() }} >
-                            <i className="material-icons">skip_previous</i>
-                        </button>
-                        <button className="icon-button" onClick={() => { player.togglePlay() }} >
-                            {!is_paused ? <i className="material-icons">pause</i> : <i className="material-icons">play_arrow</i>}
-                        </button>
-                        <button className="icon-button" onClick={() => { player.nextTrack() }} >
-                            <i className="material-icons">skip_next</i>
-                        </button>
+            <div className="flex-column spotify-container">
+                <p className="title">Now Playing</p>
+                <div className="flex-row">
+                    <img src={current_track !== null ? current_track.album.images[0].url : defaultAlbum} id="album-cover-image" />
+                    <div className="flex-column">
+                        <p id="song-name">{current_track !== null ? current_track.name : "Change device in Spotify app to \"Playlist Producer\""}</p>
+                        <p id="song-artist">{current_track !== null ? current_track.artists[0].name : " "}</p>
+                        <div className="flex-row">
+                            <button className="icon-button" onClick={() => { player.previousTrack() }} >
+                                <i className="material-icons">skip_previous</i>
+                            </button>
+                            <button className="icon-button" onClick={() => { player.togglePlay() }} >
+                                {!is_paused ? <i className="material-icons">pause</i> : <i className="material-icons">play_arrow</i>}
+                            </button>
+                            <button className="icon-button" onClick={() => { player.nextTrack() }} >
+                                <i className="material-icons">skip_next</i>
+                            </button>
+                        </div>
+                        <div className="flex-row">
+                            <p className="material-icons" id="volume-icon">{volume >= 0.01 ? "volume_up" : "volume_mute"}</p>
+                            <input type="range" min="0" max="1" step="0.01" value={volume} id="volume-slider" onChange={(event) => { setVolume(event.target.value); }} />
+                        </div>
+                        
                     </div>
-
-                    <input type="range" min="0" max="1" step="0.01" value={volume} id="volume-slider" onChange={(event) => { setVolume(event.target.value); }} />
                 </div>
             </div>
-
-            <div id="queue-container">
+            <div className="flex-column spotify-container">
                 <p className="title">Queue</p>
-                {queue.map((track, index) => <QueueItem key={index} index={index + 1} track={track} />)}
+                {queue.map((track, index) => <SongListItem key={index} index={index + 1} track={track} />)}
             </div>
         </>
     )

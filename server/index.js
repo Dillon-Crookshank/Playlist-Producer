@@ -10,6 +10,14 @@ dotenv.config();
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
+const scope = [
+    "streaming", 
+    "user-read-private", 
+    "user-top-read", 
+    "user-read-playback-state", 
+    "user-modify-playback-state"
+];
+
 //initialize the express app
 const app = express();
 app.use(cors());
@@ -28,12 +36,10 @@ app.listen(port, () => {
 
 //backend call to redirect the user to the spotify login page
 app.get('/auth/login', (req, res) => {
-    const scope = "streaming user-read-email user-read-private user-top-read user-read-playback-state";
-
     const auth_query_parameters = new URLSearchParams({
         response_type: "code",
         client_id: client_id,
-        scope: scope,
+        scope: scope.reduce((acc, curr) => (acc + " " + curr), ""),
         state: state,
         show_dialog: "false", //for debug only
         redirect_uri: "http://localhost:5000/auth/callback",
